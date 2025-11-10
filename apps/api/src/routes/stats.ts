@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-export const statsRouter = Router();
+export const statsRouter: Router = Router();
 
-statsRouter.get('/', async (req, res) => {
+statsRouter.get('/', async (req: Request, res: Response) => {
   try {
     // Total Spend (all time)
     const totalSpendResult = await prisma.invoice.aggregate({

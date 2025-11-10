@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
 export const cashOutflowRouter: Router = Router();
 
-cashOutflowRouter.get('/', async (req, res) => {
+cashOutflowRouter.get('/', async (req: Request, res: Response) => {
   try {
     const from = req.query.from as string;
     const to = req.query.to as string;
@@ -34,7 +34,7 @@ cashOutflowRouter.get('/', async (req, res) => {
     // Group by date
     const dailyOutflow = new Map<string, number>();
 
-    invoices.forEach((invoice) => {
+    invoices.forEach((invoice: any) => {
       if (invoice.dueDate) {
         const dateStr = invoice.dueDate.toISOString().split('T')[0]; // YYYY-MM-DD
         const existing = dailyOutflow.get(dateStr) || 0;

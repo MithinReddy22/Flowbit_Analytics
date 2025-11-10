@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
 export const invoiceTrendsRouter: Router = Router();
 
-invoiceTrendsRouter.get('/', async (req, res) => {
+invoiceTrendsRouter.get('/', async (req: Request, res: Response) => {
   try {
     const from = req.query.from as string;
     const to = req.query.to as string;
@@ -31,7 +31,7 @@ invoiceTrendsRouter.get('/', async (req, res) => {
     // Group by month
     const monthlyData = new Map<string, { invoice_count: number; total_spend: number }>();
 
-    invoices.forEach((invoice) => {
+    invoices.forEach((invoice: any) => {
       const month = invoice.date.toISOString().slice(0, 7); // YYYY-MM
       const existing = monthlyData.get(month) || { invoice_count: 0, total_spend: 0 };
       monthlyData.set(month, {
