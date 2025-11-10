@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-export const invoicesRouter = Router();
+export const invoicesRouter: Router = Router();
 
-invoicesRouter.get('/', async (req, res) => {
+invoicesRouter.get('/', async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 25;
@@ -16,7 +16,7 @@ invoicesRouter.get('/', async (req, res) => {
     const where: any = {};
     if (search) {
       where.OR = [
-        { invoiceNumber: { contains: search, mode: 'insensitive' } },
+        { invoiceNo: { contains: search, mode: 'insensitive' } },
         { vendor: { name: { contains: search, mode: 'insensitive' } } },
       ];
     }
@@ -51,8 +51,8 @@ invoicesRouter.get('/', async (req, res) => {
       },
     });
 
-    const items = invoices.map((invoice) => ({
-      invoice_number: invoice.invoiceNumber,
+    const items = invoices.map((invoice: any) => ({
+      invoice_number: invoice.invoiceNo,
       vendor: invoice.vendor ? { name: invoice.vendor.name } : null,
       date: invoice.date.toISOString().split('T')[0],
       total_amount: Number(invoice.totalAmount),

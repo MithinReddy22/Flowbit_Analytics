@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-export const vendorsRouter = Router();
+export const vendorsRouter: Router = Router();
 
-vendorsRouter.get('/top10', async (req, res) => {
+vendorsRouter.get('/top10', async (req: Request, res: Response) => {
   try {
     const vendors = await prisma.vendor.findMany({
       include: {
@@ -16,9 +16,9 @@ vendorsRouter.get('/top10', async (req, res) => {
     });
 
     const vendorsWithSpend = vendors
-      .map((vendor) => {
+      .map((vendor: any) => {
         const spend = vendor.invoices.reduce(
-          (sum, invoice) => sum + Number(invoice.totalAmount),
+          (sum: number, invoice: any) => sum + Number(invoice.totalAmount),
           0
         );
         return {
@@ -27,7 +27,7 @@ vendorsRouter.get('/top10', async (req, res) => {
           spend,
         };
       })
-      .sort((a, b) => b.spend - a.spend)
+      .sort((a: any, b: any) => b.spend - a.spend)
       .slice(0, 10);
 
     res.json(vendorsWithSpend);

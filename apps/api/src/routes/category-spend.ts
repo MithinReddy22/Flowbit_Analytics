@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-export const categorySpendRouter = Router();
+export const categorySpendRouter: Router = Router();
 
-categorySpendRouter.get('/', async (req, res) => {
+categorySpendRouter.get('/', async (req: Request, res: Response) => {
   try {
     const vendors = await prisma.vendor.findMany({
       where: {
@@ -22,10 +22,10 @@ categorySpendRouter.get('/', async (req, res) => {
 
     const categorySpend = new Map<string, number>();
 
-    vendors.forEach((vendor) => {
+    vendors.forEach((vendor: any) => {
       if (vendor.category) {
         const spend = vendor.invoices.reduce(
-          (sum, invoice) => sum + Number(invoice.totalAmount),
+          (sum: number, invoice: any) => sum + Number(invoice.totalAmount),
           0
         );
         const existing = categorySpend.get(vendor.category) || 0;
@@ -38,7 +38,7 @@ categorySpendRouter.get('/', async (req, res) => {
         category,
         spend,
       }))
-      .sort((a, b) => b.spend - a.spend);
+      .sort((a: any, b: any) => b.spend - a.spend);
 
     res.json(result);
   } catch (error) {
