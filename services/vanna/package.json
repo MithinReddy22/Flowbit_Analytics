@@ -1,0 +1,11 @@
+{
+  "name": "vanna-api-service",
+  "version": "1.0.0",
+  "description": "Vanna AI SQL Generator API",
+  "main": "main.py",
+  "scripts": {
+    "start": "uvicorn main:app --host 0.0.0.0 --port $PORT"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
