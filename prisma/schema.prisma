@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vendor {
+  id        String   @id @default(uuid()) @db.Uuid
+  vendorId  String   @unique @map("vendor_id") @db.Text
+  name      String   @db.Text
+  category  String?  @db.Text
+  meta      Json?    @db.JsonB
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  invoices Invoice[]
+
+  @@map("vendors")
+  @@index([vendorId])
+}
+
+model Customer {
+  id        String   @id @default(uuid()) @db.Uuid
+  customerId String @unique @map("customer_id") @db.Text
+  name      String?  @db.Text
+  meta      Json?    @db.JsonB
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  invoices Invoice[]
+
+  @@map("customers")
+  @@index([customerId])
+}
+
+model Invoice {
+  id          String    @id @default(uuid()) @db.Uuid
+  invoiceNumber String  @unique @map("invoice_number") @db.Text
+  vendorId    String?   @map("vendor_id") @db.Uuid
+  customerId String?   @map("customer_id") @db.Uuid
+  date        DateTime  @db.Date
+  dueDate     DateTime? @map("due_date") @db.Date
+  status      String?   @db.Text
+  currency    String?   @db.Text
+  subtotal    Decimal?  @db.Decimal(14, 2)
+  tax         Decimal?  @db.Decimal(14, 2)
+  totalAmount Decimal   @map("total_amount") @db.Decimal(14, 2)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+
+  vendor   Vendor?    @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  customer Customer?  @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  lineItems LineItem[]
+  payments  Payment[]
+  documents Document[]
+
+  @@map("invoices")
+  @@index([vendorId])
+  @@index([date])
+  @@index([invoiceNumber])
+  @@index([totalAmount])
+}
+
+model LineItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  invoiceId   String   @map("invoice_id") @db.Uuid
+  description String?  @db.Text
+  quantity    Decimal? @db.Decimal(14, 2)
+  unitPrice   Decimal? @map("unit_price") @db.Decimal(14, 2)
+  total       Decimal? @db.Decimal(14, 2)
+  category    String?  @db.Text
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("line_items")
+  @@index([invoiceId])
+}
+
+model Payment {
+  id        String   @id @default(uuid()) @db.Uuid
+  invoiceId String   @map("invoice_id") @db.Uuid
+  amount    Decimal? @db.Decimal(14, 2)
+  method    String?  @db.Text
+  date      DateTime? @db.Date
+  status    String?  @db.Text
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+  @@index([invoiceId])
+}
+
+model Document {
+  id         String    @id @default(uuid()) @db.Uuid
+  invoiceId  String?  @map("invoice_id") @db.Uuid
+  fileName   String?  @map("file_name") @db.Text
+  url        String?  @db.Text
+  uploadedAt DateTime? @map("uploaded_at") @db.Timestamp(6)
+
+  invoice Invoice? @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@map("documents")
+  @@index([invoiceId])
+}
+
+

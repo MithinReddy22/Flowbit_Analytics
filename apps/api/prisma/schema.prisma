@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vendor {
+  id        String    @id @default(uuid())
+  vendorId  String    @unique @map("vendor_id")
+  name      String
+  category  String?
+  meta      Json?
+  invoices  Invoice[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("vendors")
+}
+
+model Customer {
+  id         String    @id @default(uuid())
+  customerId String    @unique @map("customer_id")
+  name       String
+  meta       Json?
+  invoices   Invoice[]
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("customers")
+}
+
+model Invoice {
+  id          String     @id @default(uuid())
+  invoiceNo   String     @unique @map("invoice_number")
+  vendorId    String     @map("vendor_id")
+  customerId  String?    @map("customer_id")
+  date        DateTime
+  dueDate     DateTime?  @map("due_date")
+  status      String?
+  currency    String?
+  subtotal    Float?
+  tax         Float?
+  totalAmount Float      @map("total_amount")
+  vendor      Vendor     @relation(fields: [vendorId], references: [id])
+  customer    Customer?  @relation(fields: [customerId], references: [id])
+  lineItems   LineItem[]
+  payments    Payment[]
+  documents   Document[]
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  @@map("invoices")
+}
+
+model LineItem {
+  id          String   @id @default(uuid())
+  invoiceId   String   @map("invoice_id")
+  description String?
+  quantity    Float?
+  unitPrice   Float?   @map("unit_price")
+  total       Float?
+  category    String?
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("line_items")
+}
+
+model Payment {
+  id        String   @id @default(uuid())
+  invoiceId String   @map("invoice_id")
+  amount    Float
+  method    String?
+  date      DateTime?
+  status    String?
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("payments")
+}
+
+model Document {
+  id         String    @id @default(uuid())
+  invoiceId  String    @map("invoice_id")
+  fileName   String?   @map("file_name")
+  url        String?
+  uploadedAt DateTime? @map("uploaded_at")
+  invoice    Invoice   @relation(fields: [invoiceId], references: [id])
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@map("documents")
+}
