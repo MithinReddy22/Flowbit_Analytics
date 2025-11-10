@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 
-const router = Router();
+const router: Router = Router();
 
-router.get('/summary', async (req, res) => {
+router.get('/summary', async (req: Request, res: Response) => {
   try {
     const [vendors, customers, invoices, payments] = await Promise.all([
       prisma.vendor.count(),
@@ -18,7 +18,7 @@ router.get('/summary', async (req, res) => {
   }
 });
 
-router.get('/invoices', async (req, res) => {
+router.get('/invoices', async (req: Request, res: Response) => {
   try {
     const invoices = await prisma.invoice.findMany({
       take: 10,

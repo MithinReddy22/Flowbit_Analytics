@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import axios from 'axios';
 import rateLimit from 'express-rate-limit';
 import { prisma } from '../lib/prisma';
 
-export const chatRouter = Router();
+export const chatRouter: Router = Router();
 
 // Rate limiting for chat endpoint
 const chatRateLimit = rateLimit({
@@ -14,7 +14,7 @@ const chatRateLimit = rateLimit({
 
 chatRouter.use(chatRateLimit);
 
-chatRouter.post('/', async (req, res) => {
+chatRouter.post('/', async (req: Request, res: Response) => {
   try {
     const { question } = req.body;
 
@@ -93,7 +93,7 @@ Database Schema:
 Sample data:
 ${sampleVendor ? `Vendor: ${sampleVendor.name} (${sampleVendor.vendorId})` : ''}
 ${sampleCustomer ? `Customer: ${sampleCustomer.name || 'N/A'} (${sampleCustomer.customerId})` : ''}
-${sampleInvoice ? `Invoice: ${sampleInvoice.invoiceNumber}, Amount: ${sampleInvoice.totalAmount}, Date: ${sampleInvoice.date}` : ''}
+${sampleInvoice ? `Invoice: ${sampleInvoice.invoiceNo}, Amount: ${sampleInvoice.totalAmount}, Date: ${sampleInvoice.date}` : ''}
 `.trim();
 }
 
