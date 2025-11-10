@@ -3,13 +3,14 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python -m uvicorn main:app --host 0.0.0.0 --port $PORT",
+    "startCommand": "python -m uvicorn main_simple:app --host 0.0.0.0 --port $PORT",
     "healthcheckPath": "/health"
   },
   "environments": {
     "production": {
       "variables": {
-        "PORT": "8000"
+        "PORT": "8000",
+        "VANNA_API_KEY": "f5c8dd3bf1fed3d3015dd4af4fa03c38f970b7affc2fe74999ed938706d0d170"
       }
     }
   }
