@@ -474,6 +474,6 @@ MIT
 
 ## 👥 Contributors
 
-Built for Flowbit Analytics Dashboard project.
+Mithin Reddy Kethipelly @https://protifolio-c4c44.web.app/
 
 
