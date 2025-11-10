@@ -1,7 +1,7 @@
 import os
 import re
 from typing import Optional, List, Dict, Any
-from fastapi import FastAPI, HTTPException, Header
+from fastapi import FastAPI, HTTPException, Header, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
